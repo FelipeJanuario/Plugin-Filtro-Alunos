@@ -71,7 +71,30 @@
             if (nativeBtn.length) {
                 nativeBtn.trigger('click');
             } else {
-                alert("Não foi possível localizar o botão nativo do quiz.");
+                // fallback: tente localizar botões nativos comuns do LearnDash / WP Pro Quiz
+                var selectors = [
+                    '#ld-pss-native-start',
+                    '.wpProQuiz_startQuizButton', // WP Pro Quiz
+                    '.wpProQuiz_button',
+                    '.learndash_start_quiz',
+                    '.ld-start-quiz',
+                    '.start-quiz',
+                    'button.start_quiz',
+                    'button#start_quiz',
+                    'button[data-quiz-start]',
+                    'button[type=submit]'
+                ];
+                var found = null;
+                for (var si = 0; si < selectors.length; si++) {
+                    var $el = $(selectors[si]);
+                    if ($el.length) { found = $el.first(); break; }
+                }
+                if (found) {
+                    found.trigger('click');
+                } else {
+                    // último recurso: informar ao usuário e manter o cookie salvo
+                    alert("Não foi possível localizar automaticamente o botão nativo do quiz. O número escolhido foi salvo; por favor inicie o quiz manualmente.");
+                }
             }
         });
 
